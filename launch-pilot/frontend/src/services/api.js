@@ -1,6 +1,7 @@
 const API_BASE_URL =
-    process.env.NEXT_PUBLIC_API_URL ||
-    (process.env.NODE_ENV === "production" ? "/api" : "https://launch-pilot-iqaj-msw1mcbdp-vrushls-projects.vercel.app/api");
+    process.env.NODE_ENV === "production"
+        ? "/api"
+        : (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
 
 const getAuthHeaders = () => {
     const headers = {
