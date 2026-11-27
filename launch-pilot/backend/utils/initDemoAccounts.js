@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const User = require("../models/user");
 
 const initDemoAccounts = async () => {
     try {
@@ -47,6 +47,7 @@ const initDemoAccounts = async () => {
         }
     } catch (error) {
         console.error("[Auto-Seed] Error ensuring demo accounts:", error.message);
+        throw error;
     }
 };
 
