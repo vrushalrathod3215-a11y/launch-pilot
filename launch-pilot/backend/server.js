@@ -10,6 +10,7 @@ const productRoutes = require("./routes/productRoutes");
 const marketRoutes = require("./routes/marketRoutes");
 const competitorRoutes = require("./routes/competitorRoutes");
 const launchPlanRoutes = require("./routes/launchPlanRoutes");
+const initDemoAccounts = require("./utils/initDemoAccounts");
 
 const {
     notFound,
@@ -17,6 +18,7 @@ const {
 } = require("./middleware/errorMiddleware");
 
 const app = express();
+let demoAccountsPromise;
 
 // CORS configuration
 const allowedOrigins = process.env.FRONTEND_URL
@@ -34,13 +36,20 @@ app.use(express.json());
 app.use(async (req, res, next) => {
     try {
         await connectDB();
+        if (!demoAccountsPromise) {
+            demoAccountsPromise = initDemoAccounts().catch((error) => {
+                demoAccountsPromise = null;
+                throw error;
+            });
+        }
+        await demoAccountsPromise;
         next();
     } catch (error) {
-        console.error("MongoDB connection error:", error);
+        console.error("Backend initialization error:", error);
 
         res.status(500).json({
             success: false,
-            message: "Database connection failed"
+            message: "Backend initialization failed"
         });
     }
 });
